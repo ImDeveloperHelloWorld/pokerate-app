@@ -12,6 +12,10 @@ interface FavoritePokemon {
     _id: string;
   }
 
+  interface Pokemon {
+    name: string;
+  }
+
 const PokemonList: React.FC = () => {
   
     const dispatch = useDispatch<AppDispatch>();
@@ -90,7 +94,7 @@ const deferredFilter = useDeferredValue(filter);
     <List style={{alignItems:"center" }}>
       
       {filteredPokemons 
-        .map((pokemon: any) => (
+        .map((pokemon: Pokemon) => (
             
           <PokemonCard
             key={pokemon.name}
