@@ -23,14 +23,10 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ name, isFavoritePokemon, favo
   const [evolution, setEvolution] = useState<string | null>(null);
   const [pokemonData, setPokemonData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-console.log("render pokemonCard component " );
-
-
-
 
 const getPokemonDetails = useCallback(async (name: string) => {
   return await getPokemonByName(name);
-},[name]);
+},[]);
 
 const handleChange =  useCallback((panel: string) => async (event: React.SyntheticEvent, isExpanded: boolean) => { 
 
@@ -49,7 +45,7 @@ const handleChange =  useCallback((panel: string) => async (event: React.Synthet
   pokemonEvolution?.chain?.evolves_to?.length > 0 ? setEvolution(pokemonEvolution.chain.evolves_to[0].species.name) : setEvolution(null);
   setPokemonData(pokemonData);
   }
-},[pokemonData]);
+},[pokemonData, getPokemonDetails, name]);
 
 const onFavoriteToggle = useCallback(async (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -57,7 +53,7 @@ const onFavoriteToggle = useCallback(async (event: React.MouseEvent) => {
     !isFavorite ? addFavorite(name) : removeFavorite(favoriteId);
     setDisabled(false);
     setIsFavorite(!isFavorite);
-},[isFavorite])
+},[addFavorite, favoriteId, name, removeFavorite, isFavorite])
 
   return (
     <Accordion expanded={expanded === name} onChange={handleChange(name)} className="pokemon-card">

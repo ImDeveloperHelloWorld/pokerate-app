@@ -38,7 +38,7 @@ const deferredFilter = useDeferredValue(filter);
   },[favoritesPokemons])
 
   const filteredPokemons = useMemo(() => {
-    switch (filter) {
+    switch (deferredFilter) {
       case 'all':
         return filteredPokemonsByName;
       case 'favorites':
@@ -48,7 +48,7 @@ const deferredFilter = useDeferredValue(filter);
       default:
         return filteredPokemonsByName;
     }
-  }, [pokemons, deferredFilter, filteredPokemonsByName]);
+  }, [deferredFilter, filteredPokemonsByName, favoritePokemonsNames]);
   
 
   const fetchPokemons =  useCallback(async () => {
@@ -80,10 +80,8 @@ const deferredFilter = useDeferredValue(filter);
       dispatch(removeFavorite(favoriteId));
     
 },[])
-  console.log("pokemonList component: ");
   
   useEffect(() => {
-    console.log("pokemonList component useEffect: ");
     fetchPokemons();
   }, []);
 
