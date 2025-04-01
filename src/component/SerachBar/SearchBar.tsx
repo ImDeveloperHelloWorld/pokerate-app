@@ -1,4 +1,4 @@
-import React, { useState, useDeferredValue } from 'react';
+import React, { useState } from 'react';
 import { TextField } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { setSearchQuery } from '../../redux/reducers/searchSlice';

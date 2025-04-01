@@ -60,7 +60,7 @@ const deferredFilter = useDeferredValue(filter);
     setLoading(false);
     dispatch(setPokemons(pokemons));
     dispatch(setFavoritePokemons(favoritePokemons));
-  },[]);
+  },[id, dispatch]);
 
   const addFavoritePokemon = useCallback(
     async (name: string) => {
@@ -71,19 +71,19 @@ const deferredFilter = useDeferredValue(filter);
             console.error("Error adding favorite", error);
         }
 
-  },[])
+  },[id, dispatch])
 
   const removeFavoritePokemon = useCallback(async (favoriteId: string) => {
     
-      const response = await removeFavoriteFromMongo(favoriteId);
+      await removeFavoriteFromMongo(favoriteId);
       
       dispatch(removeFavorite(favoriteId));
     
-},[])
+},[dispatch])
   
   useEffect(() => {
     fetchPokemons();
-  }, []);
+  }, [fetchPokemons]);
 
   return (
     <List style={{alignItems:"center" }}>
