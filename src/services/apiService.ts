@@ -32,7 +32,7 @@ export const getPokemonEvolution = async (pokemonId: string) => {
             return response.data;
         }
         catch (error) {
-            console.error('Error fetching pokemon by name:', error);
+            console.error('Error fetching pokemon by id:', error);
             
         }
 };
@@ -44,7 +44,7 @@ export const getFavorites = async (userId: string) => {
             return response.data;
         }
         catch (error) {
-            console.error('Error fetching favorites:', error);
+            console.error('Error fetching favorites pokemons:', error);
             
         }
 };
@@ -56,7 +56,7 @@ export const addFavoritePokemonToMongo = async (favoritePokemon: { name: string,
             return response.data;
         }
         catch (error) {
-            console.error('Error adding favorite:', error);
+            console.error('Error adding favorite to mongo', error);
             
         }
 };
@@ -68,7 +68,7 @@ export const removeFavoriteFromMongo = async (favoriteId: string) => {
             return response.data;
         }
         catch (error) {
-            console.error('Error removing favorite:', error);
+            console.error('Error removing favorite from mongo', error);
             
         }
 };
