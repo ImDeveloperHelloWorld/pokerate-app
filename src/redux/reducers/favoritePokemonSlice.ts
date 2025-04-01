@@ -18,7 +18,9 @@ const favoritepokemonSlice = createSlice({
   initialState,
   reducers: {
     setFavoritePokemons: (state, action: PayloadAction<FavoritePokemon[]>) => {
-      state.favoritesPokemons = action.payload;
+      if(action.payload){
+        state.favoritesPokemons = action.payload;
+      }
     },
     addFavorite: (state, action: PayloadAction<FavoritePokemon>) => {
       state.favoritesPokemons.push(action.payload);
