@@ -56,8 +56,9 @@ const deferredFilter = useDeferredValue(filter);
   
 
   const fetchPokemons =  useCallback(async () => {
-    setLoading(true);  
-    const [pokemonsData, favoritePokemonsData] = await Promise.all([
+    setLoading(true);
+    try{
+      const [pokemonsData, favoritePokemonsData] = await Promise.all([
       getPokemons(),
       getFavorites(id),
     ]);
@@ -65,6 +66,10 @@ const deferredFilter = useDeferredValue(filter);
     setLoading(false);
     dispatch(setPokemons(pokemonsData));
     dispatch(setFavoritePokemons(favoritePokemonsData));
+  }catch(e){
+    console.log(e);
+    
+  }
   },[id, dispatch]);
 
   const addFavoritePokemon = useCallback(
