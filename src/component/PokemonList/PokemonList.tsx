@@ -140,7 +140,7 @@ const deferredFilter = useDeferredValue(filter);
 
 const loadMorePokemons = () => {
   
-  const newOffset = offset + 15;
+  const newOffset = offset + 40;
   setOffset(newOffset);
   fetchPokemons(newOffset);
 };
