@@ -68,7 +68,7 @@ const deferredFilter = useDeferredValue(filter);
       console.log("offset: ", offset);
       
       const pokemonsData = await getPokemons(offset);
-      setHasMore(pokemonsData.length > 0);
+      setHasMore(pokemonsData.length > 0)
       const updatedPokemons = [...pokemons, ...pokemonsData]; 
       console.log(updatedPokemons);
       
@@ -140,14 +140,14 @@ const deferredFilter = useDeferredValue(filter);
 
 const loadMorePokemons = () => {
   
-  const newOffset = offset + 20;
+  const newOffset = offset + 40;
   setOffset(newOffset);
   fetchPokemons(newOffset)
 };
 
   useEffect(() => {
     fetchAll();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);// eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

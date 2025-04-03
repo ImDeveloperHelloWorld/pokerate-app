@@ -1,4 +1,3 @@
-// src/components/Filter/Filter.tsx
 import React, {useState} from 'react';
 import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { useDispatch } from 'react-redux';
