@@ -6,6 +6,8 @@ import { setFavoritePokemons, addFavorite, removeFavorite } from '../../redux/re
 import { getPokemons, getFavorites, addFavoritePokemonToMongo, removeFavoriteFromMongo } from '../../services/apiService';
 import PokemonCard from '../PokemonCard/PokemonCard';
 import { AppDispatch, RootState } from '../../redux/store'; // Types for the store
+import CustomAlert from '../CustomAlert/CustomAlert';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 interface FavoritePokemon {
     name: string;
@@ -25,7 +27,11 @@ const PokemonList: React.FC = () => {
     const { filter } = useSelector((state: RootState) => state.filter);
     const { id } = useSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState(false);
-
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState<'error' | 'warning' | 'info' | 'success'>('success');
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [hasMore, setHasMore] = useState(true); // For checking if more data is available
+  const [offset, setOffset] = useState(0);
 const deferredSearchTerm = useDeferredValue(query);
 const deferredFilter = useDeferredValue(filter);
 
@@ -55,48 +61,110 @@ const deferredFilter = useDeferredValue(filter);
   }, [deferredFilter, filteredPokemonsByName, favoritePokemonsNames]);
   
 
-  const fetchPokemons =  useCallback(async () => {
-    setLoading(true);
+  
+
+  const fetchPokemons =  useCallback(async (offset: number) => {
     try{
-      const [pokemonsData, favoritePokemonsData] = await Promise.all([
-      getPokemons(),
-      getFavorites(id),
-    ]);
-    
-    setLoading(false);
-    dispatch(setPokemons(pokemonsData));
-    dispatch(setFavoritePokemons(favoritePokemonsData));
+      console.log("offset: ", offset);
+      
+      const pokemonsData = await getPokemons(offset);
+      setHasMore(pokemonsData.length > 0);
+      const updatedPokemons = [...pokemons, ...pokemonsData]; 
+      console.log(updatedPokemons);
+      
+      dispatch(setPokemons(updatedPokemons));
+
   }catch(e){
-    console.log(e);
-    
+    console.log(e);    
   }
-  },[id, dispatch]);
+  },[dispatch, pokemons]);
+
+  const fetchFavoritePokemons = useCallback(async () => {
+    try {
+      const favoritePokemonsData = await getFavorites(id);
+      dispatch(setFavoritePokemons(favoritePokemonsData)); 
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  },[id, dispatch])
+
+  const fetchAll = useCallback(async () => {
+    try {
+      setLoading(true);
+      await Promise.all([
+        fetchPokemons(0),
+        fetchFavoritePokemons()
+      ]);
+      setLoading(false);
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+
+  },[fetchPokemons, fetchFavoritePokemons])
+
+  const showAlert = useCallback((message: string, severity: 'error' | 'warning' | 'info' | 'success') => {
+    setAlertMessage(message);
+    setAlertSeverity(severity);
+    setAlertOpen(true);
+  },[]);
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
 
   const addFavoritePokemon = useCallback(
     async (name: string) => {
         try {
           const fovoritePokemon = await addFavoritePokemonToMongo({ name, userId: id });
           dispatch(addFavorite(fovoritePokemon));
+          showAlert(`${name} add to favorite`, "success");
         } catch (error) {
             console.error("Error adding favorite", error);
         }
 
-  },[id, dispatch])
+  },[id, dispatch, showAlert])
 
-  const removeFavoritePokemon = useCallback(async (favoriteId: string) => {
+  const removeFavoritePokemon = useCallback(async (favoriteId: string, name: string) => {
     
       await removeFavoriteFromMongo(favoriteId);
       
       dispatch(removeFavorite(favoriteId));
+      showAlert(`${name} removed from favorite`, "success");
+
     
-},[dispatch])
+},[dispatch, showAlert])
+
+const loadMorePokemons = () => {
   
+  const newOffset = offset + 20;
+  setOffset(newOffset);
+  fetchPokemons(newOffset)
+};
+
   useEffect(() => {
-    fetchPokemons();
-  }, [fetchPokemons]);
+    fetchAll();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
+    <>
+    {alertOpen && <CustomAlert
+          message={alertMessage}
+          severity={alertSeverity}
+          open={alertOpen}
+          onClose={handleAlertClose} />}
+
     <List style={{alignItems:"center" }}>
+<InfiniteScroll
+      dataLength={filteredPokemons.length} // Length of the current list of Pokémon
+      next={loadMorePokemons} // Function to call when scrolling
+      hasMore={hasMore} // Whether there is more data to load
+      loader={<CircularProgress />} // Display while loading more data
+      endMessage={<p style={{ textAlign: 'center' }}>No more Pokémons</p>} // Display when no more data is available
+    >
       
       {filteredPokemons 
         .map((pokemon: Pokemon) => (
@@ -110,7 +178,10 @@ const deferredFilter = useDeferredValue(filter);
             favoriteId={favoritePokemonsNames[pokemon.name]?.id || ""}
           />))}
       {loading && <CircularProgress />}
+    </InfiniteScroll>
     </List>
+    </>
+
   );
 };
 

@@ -28,7 +28,7 @@ const PokemonDetails: React.FC<PokemonDetailsProps> = ({ abilities, types, evolu
             </Grid>
           ))
         ) : (
-            loading ? (<Typography><CircularProgress /></Typography>) : (<Typography>No abilities available</Typography>)
+          loading ? (<Typography><CircularProgress /></Typography>) : (<Typography>No abilities available</Typography>)
 
         )}
       </Grid>
@@ -57,7 +57,10 @@ const PokemonDetails: React.FC<PokemonDetailsProps> = ({ abilities, types, evolu
       <Typography variant="h6" gutterBottom>
         Evolution:
       </Typography>
-      {loading ? (<Typography><CircularProgress /></Typography>) : (<Typography>{evolution ? evolution : 'No evolution data available'}</Typography>)}
+      {loading ? (<Typography><CircularProgress /></Typography>) : (<Typography>{evolution ? (
+        <Grid>
+          <Chip label={evolution} color="success" />
+        </Grid>) : 'No evolution data available'}</Typography>)}
     </div>
   );
 };

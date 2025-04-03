@@ -2,9 +2,9 @@ import axios from 'axios';
 
 const apiUrl = process.env.REACT_APP_POKERATE_SERVER_URL;
 
-export const getPokemons = async () => {
+export const getPokemons = async (offset: number) => {
     try {
-        const response = await axios.get(`${apiUrl}/pokemons`);
+        const response = await axios.get(`${apiUrl}/pokemons?offset=${offset}`);
         return response.data;
     }
     catch (error) {

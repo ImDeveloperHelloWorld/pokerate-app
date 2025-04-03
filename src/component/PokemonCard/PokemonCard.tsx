@@ -10,7 +10,7 @@ interface PokemonCardProps {
   isFavoritePokemon: boolean;
   favoriteId: string;
   addFavorite: (name: string) => void;
-  removeFavorite: (favoriteId: string) => void;
+  removeFavorite: (favoriteId: string, name: string) => void;
 }
 
 const PokemonCard: React.FC<PokemonCardProps> = ({ name, isFavoritePokemon, favoriteId, addFavorite, removeFavorite }) => {
@@ -50,7 +50,7 @@ const handleChange =  useCallback((panel: string) => async (event: React.Synthet
 const onFavoriteToggle = useCallback(async (event: React.MouseEvent) => {
     event.stopPropagation();
     setDisabled(true);
-    !isFavorite ? addFavorite(name) : removeFavorite(favoriteId);
+    !isFavorite ? addFavorite(name) : removeFavorite(favoriteId, name);
     setDisabled(false);
     setIsFavorite(!isFavorite);
 },[addFavorite, favoriteId, name, removeFavorite, isFavorite])
